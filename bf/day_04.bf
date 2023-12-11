@@ -7,9 +7,6 @@ Card 4: 41 92 73 84 69 | 59 84 76 51 58  5 54 83
 Card 5: 87 83 26 28 32 | 88 30 70 12 93 22 82 36
 Card 6: 31 18 13 56 72 | 74 77 10 23 35 67 36 11
 
-
- #### 297693052
-
 out0 out1 score0 score1
 255 t0 t1 t2 t3 t4
 255 win_0 win_1 etc
@@ -254,3 +251,110 @@ out0 out1 score0 score1
     ]
     ,loop on first character of the line (exits if all input is consumed)
 ]
+<+ remove first marker
+>>>>>> + remove array marker
+<<- marker at c8
+
+Convert to decimal and print output
+<c7
++[loop: every digit; c7
+    <+
+    [loop: div by 10; c6
+        <<<<c2
+        +++++ +++++ 10
+        [-loop: subtract 10
+            <- subtract low byte
+            <-> underflow carry from high byte
+            [c1
+                did not underflow
+                <+ undo underflow carry on c0
+                >c1
+                >> exit on c3
+            ] c1 or c3
+            >>>> c5 or c7
+            +[->+]- marker c8
+
+            <<<< << c2
+            loop c2
+        ] (subtract 10 complete)
+
+
+        stop division (c6) if trying to high byte underflowed
+        >>>>- unmark c6
+        <<<< << c0
+        +[-c0 is not  255
+            >>>> >>+ mark c6; subtractions can continue
+            <<< exit on c3
+        ] c0 or c3
+        >>>> >>>> c8 or c11
+        +[-<+]- marker c8
+
+
+        increase quotient
+        <<<+ addition carry c5
+        <+ add c4
+        [did not overflow
+            >- undo carry c5
+            << exit on c3
+        ] c4 or c3
+        >>+[->+]- marker c8
+        <<
+        loop c6
+    ] divided by 10
+    store remainder:
+    <<<< < c1
+    ++++ ++++ ++ add 10 to compensate overcounting
+
+    >>>> >>>> c9
+    [>]find next available spot
+    >++++++++[-<++++++>]< mark the end with a 48 (base for ascii digits)
+    <+[-<+]- marker c8
+    <<<< <<< c1
+    [- move c1 to end
+        >>>> >>>> c9
+        [>]< end of array
+        + place value
+        <+[-<+]- c8
+        <<<< <<< c1
+    ]
+    >>>> >>>>
+    [>] find end of array
+    <
+    <+[-<+]- marker c8
+
+    move quotient to input:
+    <<<<- c4
+    [-<<<+>>>] move c4 to c1
+    >[-<<<< <+> >>>>] move c5 to c0
+
+    clear c7 if input is empty:
+    >>- mark quit
+    <<<< << c1
+    [
+        >>>> >>+ mark that more decimals exist
+        <<<< exit on c3
+    ]c1 or c3
+    >>>>> c6 or c8
+    +[->+]- c8
+    <<<< <<<< c0
+    [
+        >>>> >>>+ mark that more decimals exist
+        <<<< exit on c3
+    ]c0 or c3
+    >>>>> c5 or c8
+    +[->+]- c8
+    <c7
+    [if over 1 then set to 1
+        [-]+
+        <<<< c3
+    ]c7 or c3
+    >+[->+]- c8
+    < c7
+    loop c7
+]
+>c8
++ set marker to 0
+>[>]< go to end of array
+[.<] print in reverse until start
+
+

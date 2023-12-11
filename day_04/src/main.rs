@@ -1,9 +1,10 @@
 use std::fs;
 
-fn main () {
-	for _ in 0..1000{
-	a();
-	b();}
+fn main() {
+	for _ in 0..1000 {
+		a();
+		b();
+	}
 }
 
 fn a() {
@@ -72,7 +73,7 @@ fn b() {
 			cards.push(1);
 		}
 		let this_card = cards[card_id];
-		for i in 1..(score+1) {
+		for i in 1..(score + 1) {
 			if card_id + i >= cards.len() {
 				cards.push(1 + this_card);
 			} else {
